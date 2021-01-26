@@ -7,7 +7,6 @@ axios
   .then((response) => {
     printEpisodes(response[0].data.results);
     getEpisodesNext(response[0].data.info.next);
-
   });
 
 // function getCharacters() {
@@ -23,21 +22,22 @@ function getEpisodes() {
 }
 
 function getEpisodesNext(next) {
+  console.log(next);
+  axios.get(next).then((response) => {
     $(".sidebar__next").on("click", function () {
-      axios.get(next).then((response) => {
-        printEpisodes(response.data.results);
-        getEpisodesNext(response.data.info.next);
-        console.log(next)
-
+      // console.log(response.data.info.next);
+      printEpisodes(response.data.results);
+      if (response.data.info.next !== null) {
+        // getEpisodesNext(response.data.info.next);
         axios.get(response.data.info.next).then((response) => {
-            printEpisodes(response.data.results);
-            console.log(response.data.info.next)
-    
-          });
+          printEpisodes(response.data.results);
+          // console.log(response.data.info.next);
+          $(".sidebar__next").off("click")
+        });
+      }
 
-      });
     });
-
+  });
 }
 
 function printEpisodes(episodes) {
@@ -52,4 +52,3 @@ function printEpisodes(episodes) {
         </li>`);
   });
 }
-
